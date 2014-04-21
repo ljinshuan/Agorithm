@@ -118,12 +118,55 @@ public class App {
 		}
 	}
 	/**
+	 * 堆排序
+	 * @param data
+	 */
+	public static void HeapSort(int [] data){
+		//构建堆
+		for (int i = data.length/2-1; i >=0; i--) {
+			HeapSort_HeapAdjust(data, i, data.length);
+		}
+		
+		//每次堆顶和最后一个元素交换 
+		for(int i=data.length-1;i>=0;i--){
+			int temp=data[0]; //堆顶元素
+			data[0]=data[i];
+			data[i]=temp;
+			
+			//调整
+			HeapSort_HeapAdjust(data, 0, i);
+		}
+	}
+	/**
+	 * 调整堆
+	 * @param data
+	 * @param parent 父节点编号
+	 * @param lenght 数组的有效长度
+	 */
+	public static void HeapSort_HeapAdjust(int [] data,int parent,int lenght){
+		int tempData=data[parent];
+		int child=2*parent+1;  //左边孩子编号
+		while(child<lenght){
+			//比较左右孩子的大小
+			if(child+1<lenght&&data[child]<data[child+1]){
+				child++; //右孩子更大
+			}
+			if(tempData>=data[child]){
+				break; //父节点更大 不用调整
+			}
+			data[parent]=data[child];
+			parent=child;
+			child=2*parent+1;
+		}
+		data[parent]=tempData;
+	}
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		int [] data=InitRandomArray(20);
 		PrintArray(data);
-		SelectionSort(data);
+		HeapSort(data);
 		PrintArray(data);
 	}
 
