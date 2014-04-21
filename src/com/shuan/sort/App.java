@@ -196,12 +196,67 @@ public class App {
 		}
 	}
 	/**
+	 * 归并排序
+	 * @param data
+	 * @param tempData
+	 * @param left
+	 * @param right
+	 */
+	public static void MergeSort(int [] data,int [] tempData,int left,int right){
+		if(left<right){
+			int middle=(left+right)/2;
+			MergeSort(data, tempData, left, middle);
+			MergeSort(data, tempData, middle+1, right);
+			MergeSort_Merge(data, tempData, left, middle+1, right);
+		}
+	}
+	/**
+	 * 合并两个数组
+	 * @param data
+	 * @param tempData
+	 * @param middle
+	 * @param left
+	 * @param right
+	 */
+	public static void MergeSort_Merge(int [] data,int [] tempData,int left,int middle,int right){
+		int leftEnd=middle-1;
+		int rightStart=middle;
+		
+		int tempIndex=left;
+		int tempLenght=right-left+1;
+		
+		while((left<=leftEnd)&&(rightStart<=right)){
+			if(data[left]<data[rightStart]){
+				tempData[tempIndex++]=data[left++];
+			}else{
+				tempData[tempIndex++]=data[rightStart++];
+			}
+		}
+		//判断左边是否结束
+		while(left<=leftEnd){
+			tempData[tempIndex++]=data[left++];
+		}
+		//右边
+		while(rightStart<=right){
+			tempData[tempIndex++]=data[rightStart++];
+		}
+		
+		//交换数据
+		for (int i = 0; i < tempLenght; i++) {
+			data[right]=tempData[right];
+			right--;
+		}
+	}
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		int [] data=InitRandomArray(20);
+		
 		PrintArray(data);
-		ShellSort(data);
+		int [] tempData=new int[data.length];
+		MergeSort(data, tempData, 0, data.length-1);
+	
 		PrintArray(data);
 	}
 
