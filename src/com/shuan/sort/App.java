@@ -161,12 +161,47 @@ public class App {
 		data[parent]=tempData;
 	}
 	/**
+	 * ≤Â»Î≈≈–Ú
+	 * @param data
+	 */
+	public static void InsertSort(int [] data){
+		int temp=0;
+		int j=0;
+		for(int i=1;i<data.length;i++){
+			temp=data[i];
+			
+			for(j=i-1;j>=0&&temp<data[j];j--){
+				data[j+1]=data[j];
+			}
+			data[j+1]=temp;
+		}
+	}
+	/**
+	 * œ£∂˚≈≈–Ú
+	 * @param data
+	 */
+	public static void ShellSort(int [] data){
+		int step=data.length/2;
+		int temp,j;
+		while(step>=1){
+			for (int i = step; i < data.length; i++) {
+				temp=data[i];
+				for (j=i-step; j >=0&&temp<data[j]; j=j-step) {
+					data[j+step]=data[j];
+				}
+				data[j+step]=temp;
+			}
+			
+			step=step/2;
+		}
+	}
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		int [] data=InitRandomArray(20);
 		PrintArray(data);
-		HeapSort(data);
+		ShellSort(data);
 		PrintArray(data);
 	}
 
