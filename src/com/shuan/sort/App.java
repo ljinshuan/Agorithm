@@ -56,12 +56,51 @@ public class App {
 		return data;
 	} 
 	/**
+	 * 快速排序
+	 * @param data
+	 * @param left
+	 * @param right
+	 */
+	public static void QuickSort(int [] data,int left,int right){
+		if(left<right){
+			int index=QuickSort_Division(data, left, right);
+			QuickSort(data, left, index-1);
+			QuickSort(data, index+1, right);
+		}
+	}
+	/**
+	 * 快排分割函数
+	 * @param data
+	 * @param left
+	 * @param right
+	 * @return
+	 */
+	public static int QuickSort_Division(int [] data,int left,int right){
+		int baseNum=data[left];
+		while(left<right){
+			//从右边开始找到第一个比baseNum小的数
+			while(left<right&&data[right]>=baseNum){
+				right--;
+			}
+			//把这个数放到左边去
+			data[left]=data[right];
+			//把左边第一个比baseNum大的数放到右边
+			while(left<right&&data[left]<=baseNum){
+				left++;
+			}
+			data[right]=data[left];
+		}
+		data[left]=baseNum;
+		return left;
+		
+	}
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		int [] data=InitRandomArray(20);
 		PrintArray(data);
-		BubbleSort(data);
+		QuickSort(data, 0, data.length-1);
 		PrintArray(data);
 	}
 
