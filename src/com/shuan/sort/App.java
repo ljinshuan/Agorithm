@@ -95,12 +95,35 @@ public class App {
 		
 	}
 	/**
+	 * 选择排序
+	 * @param data
+	 */
+	public static void SelectionSort(int [] data){
+		int tempIndex=0;
+		int tempData=0;
+		for (int i = 0; i < data.length-1; i++) {
+			//前面已经有序
+			tempIndex=i;
+			for (int j = i+1; j < data.length; j++) {
+				//找到最小的数的索引
+				if(data[tempIndex]>data[j]){
+					tempIndex=j;
+				}
+			}
+			
+			//交换
+			tempData=data[i];
+			data[i]=data[tempIndex];
+			data[tempIndex]=tempData;
+		}
+	}
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		int [] data=InitRandomArray(20);
 		PrintArray(data);
-		QuickSort(data, 0, data.length-1);
+		SelectionSort(data);
 		PrintArray(data);
 	}
 
