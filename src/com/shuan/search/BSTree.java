@@ -14,6 +14,7 @@ public class BSTree {
 	public int data;
 	public BSTree leftChild=null;
 	public BSTree rightChild=null;
+	public BSTree parentNode=null;
 	
 	public BSTree(int data, BSTree leftChild, BSTree rightChild) {
 		super();
@@ -30,6 +31,7 @@ public class BSTree {
 			//左边
 			if(leftChild==null){
 				leftChild=new BSTree(key, null, null);
+				leftChild.parentNode=this;
 			}else {
 				leftChild.insertTree(key);
 			}
@@ -37,6 +39,7 @@ public class BSTree {
 			//右边
 			if(rightChild==null){
 				rightChild=new BSTree(key, null, null);
+				rightChild.parentNode=this;
 			}else{
 				rightChild.insertTree(key);
 			}
@@ -76,13 +79,56 @@ public class BSTree {
 		
 	}
 	/**
-	 * 删除一个节点
+	 * 删除一个节点 不能删除自身
 	 * @param treeNode
 	 */
 	public void remove(BSTree treeNode){
-		if(treeNode.leftChild==null&&treeNode.rightChild==null){
-			treeNode=null;
+		if(this==treeNode){
+			return;
 		}
+		BSTree parent=treeNode.parentNode;
+		//删除叶子节点
+		if(treeNode.leftChild==null&&treeNode.rightChild==null){
+			if (parent.leftChild==treeNode) {
+				parent.leftChild=null;
+			}else{
+				parent.rightChild=null;
+			}
+		}
+		if(treeNode.leftChild!=null&&treeNode.rightChild==null){
+			//左子树不为空
+			if (parent.leftChild==treeNode) {
+				parent.leftChild=treeNode.leftChild;
+			}else{
+				parent.rightChild=treeNode.leftChild;
+			}
+		}
+		if(treeNode.leftChild==null&&treeNode.rightChild!=null){
+			//右子树不为空
+			if (parent.leftChild==treeNode) {
+				parent.leftChild=treeNode.rightChild;
+			}else{
+				parent.rightChild=treeNode.rightChild;
+			}
+		}
+		if(treeNode.leftChild!=null&&treeNode.rightChild!=null){
+			//两边都不为空
+			//找到右边孩子的最左节点
+			BSTree mostLeftChild=treeNode.rightChild;
+			while(mostLeftChild.leftChild!=null){
+				mostLeftChild=mostLeftChild.leftChild;
+			}
+			
+			mostLeftChild.leftChild=treeNode.leftChild;
+			
+			//重新赋值
+			if (parent.leftChild==treeNode) {
+				parent.leftChild=mostLeftChild;
+			}else{
+				parent.rightChild=mostLeftChild;
+			}
+		}
+		
 	}
 	/**
 	 * 创建一个二叉排序树
