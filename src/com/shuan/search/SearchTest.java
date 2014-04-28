@@ -3,6 +3,9 @@
  */
 package com.shuan.search;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.shuan.sort.SortTest;
 import com.shuan.util.CommonUtil;
 
@@ -53,12 +56,14 @@ public class SearchTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		int [] data=CommonUtil.InitRandomArray(30);
-		SortTest.QuickSort(data, 0, data.length-1);
-		int key=data[25];
-		CommonUtil.PrintArray(data);
-		int index=BinarySearch(data, key);
-		System.out.println(index);
+		int [] data=CommonUtil.InitRandomArray(10);
+		BSTree root=BSTree.Create(data);
+		List<Integer> result=new ArrayList<Integer>();
+		root.LDR_BST(result);
+		for (Integer integer : result) {
+			System.out.printf("%d ", integer);
+		}
+		
 	}
 
 }
