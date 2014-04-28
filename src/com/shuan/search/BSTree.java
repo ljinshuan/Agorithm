@@ -4,6 +4,7 @@
 package com.shuan.search;
 
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * @author ljinshuan
@@ -75,6 +76,15 @@ public class BSTree {
 		
 	}
 	/**
+	 * 删除一个节点
+	 * @param treeNode
+	 */
+	public void remove(BSTree treeNode){
+		if(treeNode.leftChild==null&&treeNode.rightChild==null){
+			treeNode=null;
+		}
+	}
+	/**
 	 * 创建一个二叉排序树
 	 * @param data
 	 * @return
@@ -86,6 +96,5 @@ public class BSTree {
 		}
 		return root;
 	}
-	
 	
 }

@@ -12,7 +12,7 @@ import com.shuan.util.CommonUtil;
  * @author Shuan
  *
  */
-public class SortTest {
+public class Sort {
 
 	
 	

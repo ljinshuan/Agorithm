@@ -6,14 +6,14 @@ package com.shuan.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.shuan.sort.SortTest;
+import com.shuan.sort.Sort;
 import com.shuan.util.CommonUtil;
 
 /**
  * @author ljinshuan
  *
  */
-public class SearchTest {
+public class Search {
 
 	/**
 	 * À≥–Ú≤È’“
