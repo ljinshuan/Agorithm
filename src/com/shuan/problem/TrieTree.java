@@ -25,6 +25,8 @@ public class TrieTree {
 		
 		root.ListAllWords();
 		System.out.println(root.wordCount("book"));
+		
+		root.searchTire("an");
 	}
 }
 
@@ -107,6 +109,30 @@ class TrieNode{
 			
 		}
 		sb.deleteCharAt(sb.length()-1);
+	}
+	
+	/**
+	 * 搜索前缀为word的所有单词
+	 * @param word
+	 */
+	public void searchTire(String word){
+		if(word.isEmpty()){
+			return ;
+		}
+		//取第一个字母
+		char ch = word.charAt(0);
+		// 计算 位置
+		int index = ch - 'a';
+		TrieNode node=childnodes[index];
+		if (node == null) {
+			return ;
+		}
+		String nextWord = word.substring(1);
+		
+		if (nextWord.length() == 0) {
+			node.ListAllWords();
+		}
+		node.searchTire(nextWord);
 	}
 	
 }
