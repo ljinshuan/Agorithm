@@ -6,6 +6,7 @@ package com.shuan.problem;
 /**
  * @author Shuan
  * 整形转字符串
+ * 关键为求整数长度  以及建立表来进行直接查找
  */
 public class ToString {
 
