@@ -33,6 +33,7 @@ public class OnSortTest {
 	public void testBaseSort() {
 		onSort.baseSort(data);
 		CommonUtil.PrintArray(data);
+		Integer.toString(11234);
 	}
 	
 	@Test
