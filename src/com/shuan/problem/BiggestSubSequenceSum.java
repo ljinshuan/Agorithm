@@ -7,7 +7,7 @@ import com.shuan.util.CommonUtil;
 
 /**
  * @author Shuan
- * 
+ * 最大子段和
  */
 public class BiggestSubSequenceSum {
 
