@@ -24,6 +24,7 @@ public class TrieTree {
 		root.addWord("book");
 		
 		root.ListAllWords();
+		//System.out.println(root.wordCount("book"));
 		System.out.println(root.wordCount("book"));
 		
 		root.searchTire("an");
@@ -92,6 +93,10 @@ class TrieNode{
 		}
 		return node.wordCount(nextWord);
 	}
+	/**
+	 * œ»–Ú±È¿˙
+	 * @param sb
+	 */
 	public void LDR(StringBuffer sb){
 		sb.append(this.nodeChar);
 		if(childnodes==null){
