@@ -17,6 +17,14 @@ public class CommonUtil {
 		}
 		return data;
 	}
+	public static int [] InitRandomArray(int max,int len){
+		int [] data=new int[len];
+		Random random=new Random(new Date().getTime());
+		for(int i=0;i<len;i++){
+			data[i]=random.nextInt(max);
+		}
+		return data;
+	}
 	/**
 	 * ´òÓ¡Êý×é
 	 * @param data
