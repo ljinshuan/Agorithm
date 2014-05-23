@@ -11,9 +11,10 @@ public class AVLTree {
 	public int key; // 值
 	public AVLTree leftChild; // 左子树
 	public AVLTree rightChild; // 右子树
-	
+	public int height;
 	public AVLTree(int key) {
 		this.key = key;
+		height=1;
 	}
 
 	public AVLTree add(int key) {
@@ -62,9 +63,17 @@ public class AVLTree {
 			}
 		}
 
-
+		this.updateHeight();
+		
 		return root;
 
+	}
+
+	private void updateHeight() {
+		int leftHeight,rightHeight;
+		leftHeight=this.leftChild==null?0:this.leftChild.getHeight();
+		rightHeight=this.rightChild==null?0:this.rightChild.getHeight();
+		this.height=(leftHeight>rightHeight?leftHeight:rightHeight)+1;
 	}
 
 	private AVLTree rotateRR() {
@@ -74,6 +83,10 @@ public class AVLTree {
 		this.rightChild = top.leftChild;
 		top.leftChild = this;
 		
+		
+		//更新Height
+		//this.updateHeight();
+		top.updateHeight();
 		return top;
 
 	}
@@ -93,10 +106,17 @@ public class AVLTree {
 		assert (this.leftChild != null);
 		this.leftChild = top.rightChild;
 		top.rightChild = this;
+		
+		//更新Height
+		//this.updateHeight();
+		top.updateHeight();
 		return top;
 	}
 
 	public int getHeight() {
+		
+		return height;
+	/*	
 		if (this.leftChild == null && this.rightChild == null) {
 			return 1;
 		}
@@ -105,9 +125,57 @@ public class AVLTree {
 		int rightHeight = this.rightChild == null ? 0 : this.rightChild
 				.getHeight();
 
-		return (leftHeight > rightHeight ? leftHeight : rightHeight) + 1;
+		return (leftHeight > rightHeight ? leftHeight : rightHeight) + 1;*/
 	}
 
+	/**
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public boolean contains(int key){
+		if (this.key==key) {
+			return true;
+		}
+		if (this.leftChild!=null) {
+			return this.leftChild.contains(key);
+		}
+		if(this.rightChild!=null){
+			return this.rightChild.contains(key);
+		}
+		return false;
+	}
+	
+	/**
+	 * 在范围内查找
+	 * @param min
+	 * @param max
+	 */
+	public void searchRange(int min,int max){
+		
+		if (this.key>min) {
+			if (this.leftChild!=null) {
+				this.leftChild.searchRange(min, max);
+			}
+		}
+		if (this.key>=min&&this.key<=max) {
+			System.out.println(this.key);
+		}
+		if (this.key<min||this.key<max) {
+			if (this.rightChild!=null) {
+				this.rightChild.searchRange(min, max);
+			}
+		}
+	}
+	
+	/**
+	 * 删除值为key的node
+	 * @param key
+	 * @return
+	 */
+	public AVLTree remove(int key){
+		return null;
+	}
 	/**
 	 * @param args
 	 */
@@ -116,6 +184,7 @@ public class AVLTree {
 		root = root.add(2);
 		root = root.add(3);
 		root = root.add(4);
+		root.searchRange(1, 3);
 		System.out.println("over");
 	}
 
