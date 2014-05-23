@@ -3,6 +3,9 @@
  */
 package com.shuan.problem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Shuan 平衡二叉树
  */
@@ -24,7 +27,7 @@ public class AVLTree {
 		if (key <= this.key) {
 			// 左子树
 			if (this.leftChild != null) {
-				this.leftChild.add(key);
+				this.leftChild=this.leftChild.add(key);
 			} else {
 				leftChild = new AVLTree(key);
 			}
@@ -44,7 +47,7 @@ public class AVLTree {
 		} else {
 			// 右子树
 			if (this.rightChild != null) {
-				this.rightChild.add(key);
+				this.rightChild=this.rightChild.add(key);
 			} else {
 				rightChild = new AVLTree(key);
 			}
@@ -85,19 +88,19 @@ public class AVLTree {
 		
 		
 		//更新Height
-		//this.updateHeight();
+		this.updateHeight();
 		top.updateHeight();
 		return top;
 
 	}
 
 	private AVLTree rotateRL() {
-		this.rightChild.rightChild = this.rightChild.rightChild.rotateLL();
+		this.rightChild = this.rightChild.rotateLL();
 		return this.rotateRR();
 	}
 
 	private AVLTree rotateLR() {
-		this.leftChild.leftChild = this.leftChild.leftChild.rotateRR();
+		this.leftChild=this.leftChild.rotateRR();
 		return this.rotateLL();
 	}
 
@@ -108,7 +111,7 @@ public class AVLTree {
 		top.rightChild = this;
 		
 		//更新Height
-		//this.updateHeight();
+		this.updateHeight();
 		top.updateHeight();
 		return top;
 	}
@@ -167,24 +170,144 @@ public class AVLTree {
 			}
 		}
 	}
-	
 	/**
-	 * 删除值为key的node
-	 * @param key
+	 * 找到最小节点
 	 * @return
 	 */
-	public AVLTree remove(int key){
-		return null;
+	public AVLTree findMin(){
+		if (this.leftChild==null) {
+			return this;
+		}
+		return this.leftChild.findMin();
 	}
+	/**
+	 * 找到最大节点
+	 * @return
+	 */
+	public AVLTree findMax(){
+		if (this.rightChild==null) {
+			return this;
+		}
+		return this.rightChild.findMax();
+	}
+	
+	/**
+	 * 递归删除
+	 * @param parentNode 父亲节点
+	 * @param key  key
+	 * @return  根节点
+	 */
+	public AVLTree remove(int key) {
+		AVLTree node=this;
+		
+		if (key<this.key) {
+			//左边
+			if (this.leftChild!=null) {
+				this.leftChild=this.leftChild.remove(key);
+				//调整高度
+				int rightHeight = 0;
+				int leftHeight = 0;
+				if (this.rightChild != null) {
+					rightHeight = rightChild.getHeight();
+				}
+				if (this.leftChild!=null) {
+					leftHeight = this.leftChild.getHeight();
+				}
+				
+				if (rightHeight - leftHeight == 2) {
+					// 相差2 就不平衡
+					if (key < this.leftChild.key) {
+						node = this.rotateLL();
+					} else {
+						node = this.rotateLR();
+					}
+				}
+			}
+		}else if(key>this.key){
+			//右边
+			if (this.rightChild!=null) {
+				node.rightChild=this.rightChild.remove(key);
+			
+				//调整高度
+				int rightHeight = 0;
+				int leftHeight = 0;
+				if (this.leftChild != null) {
+					leftHeight = this.leftChild.getHeight();
+				}
+				if (this.rightChild!=null) {
+					rightHeight = this.rightChild.getHeight();
+				}
+				if (leftHeight - rightHeight == 2) {
+					// 相差2 就不平衡
+					if (key < this.rightChild.key) {
+						node = this.rotateRL();
+					} else {
+						node = this.rotateRR();
+					}
+				}
+			}
+		}else{
+			//当前节点
+			node=this.realRemove();
+		}
+		//重新计算高度
+		this.updateHeight();
+		return node;
+		
+	}
+
+	private AVLTree realRemove() {
+		
+		if (this.leftChild==null&&this.rightChild==null) {
+			return null;
+		}else if(this.leftChild==null){
+			//只有右孩子
+			return this.rightChild;
+		}else if(this.rightChild==null){
+			//只有左孩子
+			return this.leftChild;
+		}else{
+			//有两个孩子
+			AVLTree nextNode=this.findLDRNext(); //中序遍历的下一个节点 这个节点一定是个叶子节点
+			//直接换值
+			this.key=nextNode.key;
+			this.rightChild=this.rightChild.remove(this.key);
+			return this;
+		}
+	}
+
+	/**
+	 * 获取中序遍历的后一个节点
+	 * @return
+	 */
+	private AVLTree findLDRNext() {
+		AVLTree node=null;
+		node=this.rightChild;
+		while(node!=null&&node.leftChild!=null){
+			node=node.leftChild;
+		}
+		return node;
+	}
+
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		AVLTree root = new AVLTree(1);
-		root = root.add(2);
+		AVLTree root = new AVLTree(10);
+		/*root = root.add(2);
 		root = root.add(3);
 		root = root.add(4);
+		root=root.add(5);*/
+		
+		root = root.add(5);
+		root = root.add(15);
+		root=root.add(2);
+		root=root.add(3);
 		root.searchRange(1, 3);
+		
+		//删除
+		
+		root=root.remove(10);
 		System.out.println("over");
 	}
 
