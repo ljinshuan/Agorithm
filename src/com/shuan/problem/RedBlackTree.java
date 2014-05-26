@@ -20,167 +20,153 @@ public class RedBlackTree {
 	public void add(int key) {
 		if (root == null) {
 			// 根节点
-			root = new TreeNode(key, null);
+			root = new TreeNode(key);
 			root.color = NodeColor.Black;
-			root.parent = root;
 			return;
 		}
-		root=root.add(key);
-		root.color=NodeColor.Black;
-		root.parent=root;
+		root = root.add(key);
+		root.color = NodeColor.Black;
 	}
-	public void printTree(){
+
+	public void printTree() {
 		root.LDR();
 	}
 
 	private class TreeNode {
 		public int Key;
 		NodeColor color;
-		TreeNode parent;
 		TreeNode leftChild;
 		TreeNode rightChild;
 
-		public TreeNode(int key, TreeNode parent) {
+		public TreeNode(int key) {
 			this.Key = key;
 			this.leftChild = null;
 			this.rightChild = null;
 			this.color = NodeColor.Red;
-			this.parent = parent;
 		}
 
 		public void LDR() {
-			
-			if (this.leftChild!=null) {
+
+			if (this.leftChild != null) {
 				this.leftChild.LDR();
 			}
 			System.out.println(this.Key);
-			if (this.rightChild!=null) {
+			if (this.rightChild != null) {
 				this.rightChild.LDR();
 			}
 		}
 
 		public TreeNode add(int key) {
 			TreeNode root = null;
-			TreeNode parentNode=this.parent;
 			if (key < this.Key) {
 				// left
 				if (this.leftChild != null) {
-					root=this.leftChild.add(key);
-					
+					this.leftChild = this.leftChild.add(key);
+
 				} else {
-					this.leftChild = new TreeNode(key, this);
+					this.leftChild = new TreeNode(key);
 				}
-				 root = fixAfterInsert(this.leftChild);
+				root = fixAfterInsert(this.leftChild);
 			} else {
 				// right
 				if (this.rightChild != null) {
-					root=this.rightChild.add(key);
+					this.rightChild = this.rightChild.add(key);
 				} else {
-					this.rightChild = new TreeNode(key, this);
+					this.rightChild = new TreeNode(key);
 				}
-				 root = fixAfterInsert(this.rightChild);
+				root = fixAfterInsert(this.rightChild);
 			}
-			if (root==RedBlackTree.this.root) {
-				return root;
-			}
-			if (parentNode.parent.leftChild==parentNode) {
-				parentNode.parent.leftChild=root;
-			}else{
-				parentNode.parent.rightChild=root;
-			}
-			root.parent=parentNode.parent;
-
+			
 			return root;
 		}
 
-		
 		private TreeNode fixAfterInsert(TreeNode childNode) {
-
-			if (this.color == NodeColor.Black) {
-				// 黑色 不用调整
-				return this.parent;
+			if (childNode == null || childNode.color == NodeColor.Black) {
+				return this;
 			}
-			if (childNode.color == NodeColor.Black) {
-				return this.parent;
-			}
-			TreeNode top = null;
-			// 连续两个红色 需要调整
-			// 判定需要怎样的旋转
-			TreeNode parentNode=this.parent;
-			if (parentNode.leftChild == this) {
-				// 在祖父节点的左边
-				TreeNode brotherNode = parentNode.rightChild;
-				if (brotherNode != null && brotherNode.color == NodeColor.Red) {
-					// 红 直接调整颜色
-					this.color = NodeColor.Black;
-					brotherNode.color = NodeColor.Black;
-					parentNode.color = NodeColor.Red;
-					top=this.parent;
-				} else {
-					// 黑或者空 需要旋转
-					TreeNode rrTop=this;
-					if (childNode == this.rightChild) {
-						rrTop=childNode.RotateRR(); //这里会改变this状态
-						parentNode.leftChild=rrTop;
-						rrTop.parent=parentNode;
+			TreeNode top = this;
+			// 判断是否符合规则
+			if (childNode == this.leftChild) {
+				// 调整左子树
+				TreeNode brotherNode = this.rightChild;
+				if ((childNode.rightChild != null && childNode.rightChild.color == NodeColor.Red)
+						|| (childNode.leftChild != null && childNode.leftChild.color == NodeColor.Red)) {
+					// 需要调整
+					if (brotherNode != null
+							&& brotherNode.color == NodeColor.Red) {
+						// 直接改变颜色
+						this.color = NodeColor.Red;
+						childNode.color = NodeColor.Black;
+						brotherNode.color = NodeColor.Black;
+					} else {
+						// 叔节点为空或者为黑色 需要进行旋转
+						// 以下两个条件只可能出现一种
+						if (childNode.rightChild != null
+								&& childNode.rightChild.color == NodeColor.Red) {
+							// LR
+							this.leftChild = childNode.rotateRR(); // childNode已经改变了
+							childNode = this.leftChild;
+						}
+						if (childNode.leftChild != null
+								&& childNode.leftChild.color == NodeColor.Red) {
+							// LL
+							childNode.color = NodeColor.Black;
+							this.color = NodeColor.Red;
+							top = this.rotateLL();
+						}
 					}
-					//调整颜色
-					rrTop.color=NodeColor.Black;
-					parentNode.color=NodeColor.Red;
-					//旋转
-					top = rrTop.RotateLL();
 				}
+
 			} else {
-				// 在祖父节点的右边
-				TreeNode brotherNode=parentNode.leftChild;
-				if (brotherNode!=null&&brotherNode.color==NodeColor.Red) {
-					// 红 直接调整颜色
-					this.color = NodeColor.Black;
-					brotherNode.color = NodeColor.Black;
-					parentNode.color = NodeColor.Red;
-					top=this.parent;
-				}else{
-					TreeNode llTop=this;
-					if (childNode==this.leftChild) {
-						llTop=childNode.RotateLL();
-						parentNode.rightChild=llTop;
-						llTop.parent=parentNode;
+				// 调整右子树
+				TreeNode brotherNode = this.leftChild;
+				if ((childNode.rightChild != null && childNode.rightChild.color == NodeColor.Red)
+						|| (childNode.leftChild != null && childNode.leftChild.color == NodeColor.Red)) {
+					// 需要调整
+					if (brotherNode != null
+							&& brotherNode.color == NodeColor.Red) {
+						// 直接改变颜色
+						this.color = NodeColor.Red;
+						childNode.color = NodeColor.Black;
+						brotherNode.color = NodeColor.Black;
+					} else {
+						// 叔节点为空或者为黑色 需要进行旋转
+
+						// 以下两个条件只可能出现一种
+						if (childNode.leftChild != null
+								&& childNode.leftChild.color == NodeColor.Red) {
+							// RL
+							this.rightChild = childNode.rotateLL(); // childNode已经改变了
+							childNode = this.rightChild;
+						}
+						if (childNode.rightChild != null
+								&& childNode.rightChild.color == NodeColor.Red) {
+							// RR
+							childNode.color = NodeColor.Black;
+							this.color = NodeColor.Red;
+							top = this.rotateRR();
+
+						}
 					}
-					//调整颜色
-					llTop.color=NodeColor.Black;
-					parentNode.color=NodeColor.Red;
-					//旋转
-					top=parentNode.rightChild.RotateRR();
 				}
 			}
 
 			return top;
 		}
 
-		private TreeNode RotateRR() {
-			TreeNode top=this;
-			TreeNode parent=this.parent;
-			
-			parent.rightChild=this.leftChild;
-			if (this.leftChild!=null) {
-				this.leftChild.parent=parent;
-			}
-			top.leftChild=parent;
-			parent.parent=top;
-			
-			return this;
+		private TreeNode rotateLL() {
+			TreeNode top=this.leftChild;
+			assert(top!=null);
+			this.leftChild=top.rightChild;
+			top.rightChild=this;
+			return top;
 		}
-		private TreeNode RotateLL() {
-			TreeNode top=this;
-			TreeNode parent=this.parent;
-			
-			parent.leftChild=this.rightChild;
-			if (this.rightChild!=null) {
-				this.rightChild.parent=parent;
-			}
-			top.rightChild=parent;
-			parent.parent=top;
-			
+
+		private TreeNode rotateRR() {
+			TreeNode top=this.rightChild;
+			assert(top!=null);
+			this.rightChild=top.leftChild;
+			top.leftChild=this;
 			return top;
 		}
 
@@ -194,7 +180,7 @@ public class RedBlackTree {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		RedBlackTree redBlackTree=new RedBlackTree();
+		RedBlackTree redBlackTree = new RedBlackTree();
 		redBlackTree.add(10);
 		redBlackTree.add(5);
 		redBlackTree.add(15);
